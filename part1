@@ -1,0 +1,215 @@
+# -*- coding: cp1254 -*-
+import inspect, os
+dosya=open(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) + "\sn.txt","r")    ########### Baska kisilerin oldugu dosya burda acilacak ###########
+
+mynodes = {}
+
+filename1 = "sn.txt"
+myfile1 = open(filename1)
+lines1 = len(myfile1.readlines())
+
+i=1
+while i < lines1+1 :
+    
+    satir=dosya.readline()
+    listnode=satir.split(":")
+    a=listnode[1].split()
+
+    keynode=listnode[0]
+    mynodes[keynode]=a
+    
+    i=i+1
+
+dosya.close()
+
+keys= mynodes.keys()
+values=mynodes.values()
+
+
+command=open(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) + "\commandsP1.txt","r")    ########### Baska komutların oldugu dosya burda acilacak ###########
+
+keys= mynodes.keys()
+values=mynodes.values()
+
+
+myfile2 = open(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) + "\commandsP1.txt","r")
+lines2 = len(myfile2.readlines())
+
+def fmax(list):  
+     max=list[0]
+     for i in range(1,len(list)):
+             if(list[i]>max):
+                max=list[i]
+     return (max)
+
+def fmin(newlist):   
+     min=newlist[0]  
+     for i in range(1,len(newlist)):
+             if(newlist[i]<min):
+                min=newlist[i]
+     return (min)
+      
+def ssort(orglist):
+     sortedlist = []
+     while(len(orglist)):
+         sortedlist.append(fmin(orglist))
+         orglist.remove(fmin(orglist))
+     return sortedlist 
+
+j=1
+while j < lines2+1 :
+    
+    satir=command.readline()
+    commandline=satir.split()
+    a=len(commandline)
+
+    if commandline[0] == "AU" :
+        if int(a)< 3 :
+            print "Error: Wrong input type for 'AU'!"
+        elif str(commandline[1]) in keys:
+            print "This user already exists!!"
+        elif not str(commandline[2]) in keys :
+            print "There is no user named " + "'" + str(commandline[2]) + "'" 
+        else:
+            #first create new list and key values for new user
+            addedkey=commandline[1]
+            addedlist=list(commandline[2])
+            mynodes[addedkey]=addedlist
+            #second add new user to the existing users relations
+            existinglist = mynodes.get(commandline[2])
+            existinglist.append(commandline[1])
+            
+            print "User " + "'" + commandline[1] + "'" + " has been added and tied to " + "'" + commandline[2] + "'" + " successfully. "
+
+
+    elif commandline[0] == "RU" :
+        if int(a)< 2 or int(a)== 3 :
+            print "Error: Wrong input type! for 'RU'!"
+        elif not str(commandline[1]) in keys :
+            print "There is no user named " + "'" + str(commandline[1]) + "'" + " !!"
+        else :
+            keynode=commandline[1]
+            #delete user S
+            del mynodes[keynode]
+            #delete S in friends
+            for i in range(0,len(keys)):
+                if str(commandline[1]) in str(mynodes.values()[i]):
+                    mynodes.values()[i].remove(str(commandline[1]))
+               
+            print "User " + "'" + commandline[1] + "'" + " and its all relations have been removed successfully. " 
+
+
+    elif commandline[0] == "AR":
+        if int(a)< 3 :
+            print "Error: Wrong input type for 'AR'!"
+        if int(a)==3 :
+            if commandline[1] in keys:
+                if commandline[2] in keys:
+                    if commandline[2] in mynodes[commandline[1]] :
+                        print "A relation between " + "'" + commandline[1] + "'" + " and " + "'" + commandline[2] + "'" + " already exists!!"
+                    else :
+                        firstlist = mynodes.get(commandline[1])
+                        firstlist.append(commandline[2])
+                        secondlist = mynodes.get(commandline[2])
+                        secondlist.append(commandline[1])
+                        print "Relation between " + "'" + commandline[1] + "'" + " and " + "'" + commandline[2] + "'" + " has been added successfully."                                  
+                else:
+                    print "No user named " + "'" + commandline[1] + "'" + " or " + "'" + commandline[2] + "'" + " found!!"
+            else:
+                print "No user named " + "'" + commandline[1] + "'" + " or " + "'" + commandline[2] + "'" + " found!!"
+
+
+    elif commandline[0] == "RR":
+        if int(a)< 3 :
+            print "Error: Wrong input type! for 'RR'!"
+        if int(a)==3 :
+            if commandline[1] in keys:
+                if commandline[2] in keys:
+                    if commandline[2] in mynodes[commandline[1]] :
+                        removelist1 = mynodes.get(commandline[1])
+                        removelist1.remove(commandline[2])
+                        removelist2 = mynodes.get(commandline[2])
+                        removelist2.remove(commandline[1])
+                        print "A relation between " + "'" + commandline[1] + "'" + " and " + "'" + commandline[2] + "'" + " has been removed successfully."
+
+                    else:
+                        print "No relation between " + "'" + commandline[1] + "'" + " and " + "'" + commandline[2] + "'" + " found!!"
+                    
+            else:
+                print "No user named " + "'" + commandline[1] + "'" + " or " + "'" + commandline[2] + "'" + " found!!"
+
+
+    elif commandline[0] == "PA":
+        if int(a)< 2 :
+            print "Error: Wrong input type! for 'PA'!"
+        if int(a) == 2 :
+            if int(commandline[1])> len(keys):
+                print "Invalid input since n is greater than 20"
+            elif int(commandline[1])<0 : 
+                print "Invalid input since n is less than 0"
+            else: #valid input
+                user=[]
+                user2=[]
+                friendnumber=[]
+                friendnumber2=[]
+                for i in range(0,len(keys)):
+                    print "User" , mynodes.keys()[i] , "has", len(mynodes.values()[i]), "friends"
+                    
+                    user.append(mynodes.keys()[i])
+                    user2.append(mynodes.keys()[i])
+                    friendnumber.append(len(mynodes.values()[i]))
+                    friendnumber2.append(len(mynodes.values()[i]))
+                
+                x = 0    
+                while x < len(friendnumber)  :
+
+                    for i in range(1,int(commandline[1])+1):
+
+                        m=fmax(friendnumber)
+                        kacinci=friendnumber.index(m)
+                        print str(i)+". "+"'"+user[kacinci]+"'"+":",m
+                        friendnumber.remove(m)
+                        user.remove(user[kacinci])                       
+
+                    if i == int(commandline[1]) :
+                        break                             
+                
+                                                             
+    elif commandline[0] == "SA":
+        if int(a)< 3 :
+            print "Error: Wrong input type! for 'SA'!"
+        if int(a) ==3 :
+            if commandline[1] in keys:
+                #m includes the list of frieds of commandline[1]
+                m=mynodes.get(commandline[1])
+                numoffriendinput=len(m)
+                if int(commandline[2]) > numoffriendinput  :
+                    print "User "  + "'" + commandline[1] + "'" + " has less friend than " + commandline[2]
+                elif int(commandline[2]) <= numoffriendinput :
+                    print "Suggestion List for " + "'" + commandline[1] + "'" + " (when MD is " + commandline[2] + "):"
+                    for i in range(0, len(mynodes.keys())):
+                        numoffriendcomp = len(mynodes.get(mynodes.keys()[i]))
+                        # compfriendlist includes list of frieds of mynodes.keys()[i]
+                        compfriendlist = mynodes.get(mynodes.keys()[i])
+                        if len(set(compfriendlist) & set(m)) >= int(commandline[2]) and  mynodes.keys()[i]!=  commandline[1]:
+                            print "'" + commandline[1] + "'" + " has " + str(len(set(compfriendlist) & set(m))) + " mutual friends with " + mynodes.keys()[i] 
+                     
+            else :
+                print "No user named " + "'" + commandline[1] + "'" + " found!!"       
+    
+    else:
+        print "Error: Undefined command type!"
+           
+    j=j+1
+
+command.close()
+
+sorteduser2 = ssort(user2)
+
+v=open(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) + "\sn.txt","w")
+
+for i in sorteduser2:
+    k= " ".join(mynodes[i])
+    v.write(i+":"+k+"\n")
+
+v.close()
