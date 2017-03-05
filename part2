@@ -1,0 +1,85 @@
+# -*- coding: cp1254 -*-
+dosya=open("paths.txt","r")
+
+mypaths = {}
+
+filename1 = "paths.txt"
+myfile1 = open(filename1)
+lines1 = len(myfile1.readlines())
+       
+i=1
+while i < lines1+1 :
+    
+    satir=dosya.readline()
+    listnode=satir.split()
+    a=listnode[0]
+    listnode[0] = a[2]
+    keynode= a[0]
+    mypaths[keynode]=listnode
+    i=i+1
+    
+keys= mypaths.keys()
+values=mypaths.values()
+
+command=open("commandsP2.txt","r")
+satir=command.readline()
+
+city=[]
+
+for j in satir:
+    city.append(j)
+
+for j in city:
+    if j == ",":
+        city.remove(str(","))
+
+#birinci adim
+
+for i in city:
+    
+    ucuncu=[]
+    birinci=[]
+    ikinci=[]
+    yok=[]
+    
+    a=mypaths.get(i)
+    if str(a) != "None":
+        for v in a:
+            birinci.append(v)
+        
+    if str(a) == "None":
+        yok.append(a)
+        
+#ikinci adim
+        
+    for j in birinci:
+        b=len(j)
+        for k in j:
+            c=mypaths.get(k)
+            if str(c) != "None":
+                for z in c:
+                    ikinci.append(z)
+        
+###ucuncu adim
+                
+            for l in ikinci:
+                d=len(l)
+                for m in l:
+                    f=mypaths.get(m)
+                    if str(f) != "None":
+                        for x in f:
+                            ucuncu.append(x)
+
+    set1=set(birinci)
+    set2=set(ikinci)
+    set3=set(ucuncu)
+    union = set1|set2|set3
+    unionlist=[]
+    for p in union:        
+        unionlist.append(p)
+        
+    if len(unionlist) != 0:
+        print "'"+i+"'"+":"+str(unionlist)
+        
+    if len(unionlist) == 0:
+        print "City "+"'"+i+"'"+" has no reachable neighbour"
